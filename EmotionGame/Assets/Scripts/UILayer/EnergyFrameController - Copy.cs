@@ -5,7 +5,7 @@ public class EnergyFrameController : MonoBehaviour
 {
     public GameObject energy;
     public float initialLength = 1f;
-    public float photoAdd = 0.2f;
+    public float photoAdd = 5f;
     public float reduceSpeed = 0.01f;
     public float deathLine = 0.1f;
 
@@ -58,7 +58,7 @@ public class EnergyFrameController : MonoBehaviour
         if (energyRectTransform != null)
         {
             Vector3 scale = energyRectTransform.localScale;
-            scale.x = Mathf.Min(1, scale.x + photoAdd);
+            scale.x = Mathf.Min(initialLength, scale.x + photoAdd);
             energyRectTransform.localScale = scale;
         }
     }

@@ -6,17 +6,31 @@ public class MineController : MonoBehaviour
     public GameObject[] mines;
     public float riseDistance = 0.5f;
     public float riseDuration = 0.5f;
+    
+    // 保存初始状态
+    private Vector3[] initialPositions;
+    private bool[] initialActiveStates;
 
     private void Start()
     {
-        // 初始化所有地雷为不显示，并添加Tag
-        foreach (GameObject mine in mines)
+        // 初始化状态数组
+        initialPositions = new Vector3[mines.Length];
+        initialActiveStates = new bool[mines.Length];
+        
+        // 初始化所有地雷为不显示，并添加Tag，同时保存初始状态
+        for (int i = 0; i < mines.Length; i++)
         {
-            if (mine != null)
+            if (mines[i] != null)
             {
-                mine.SetActive(false);
-                mine.tag = "Mine";
-                Debug.Log($"设置地雷Tag: {mine.name}");
+                // 先设置初始状态
+                mines[i].SetActive(false);
+                mines[i].tag = "Mine";
+                
+                // 再保存初始状态（游戏开始时的状态）
+                initialPositions[i] = mines[i].transform.position;
+                initialActiveStates[i] = mines[i].activeSelf;
+                
+                Debug.Log($"设置地雷Tag: {mines[i].name}, 初始位置: {initialPositions[i]}, 初始激活状态: {initialActiveStates[i]}");
             }
         }
 
@@ -103,9 +117,29 @@ public class MineController : MonoBehaviour
             GameObject mine = mines[mineCount];
             if (mine != null)
             {
-                Destroy(mine);
-                Debug.Log($"销毁地雷: {mineCount}");
+                mine.SetActive(false);
+                Debug.Log($"隐藏地雷: {mineCount}");
             }
         }
+    }
+    
+    // 重置到初始状态
+    public void ResetToInitialState()
+    {
+        Debug.Log("MineController: 开始重置到初始状态");
+        
+        for (int i = 0; i < mines.Length; i++)
+        {
+            if (mines[i] != null)
+            {
+                // 恢复初始位置
+                mines[i].transform.position = initialPositions[i];
+                // 恢复初始激活状态
+                mines[i].SetActive(initialActiveStates[i]);
+                Debug.Log($"MineController: 重置地雷 {i} - 位置: {initialPositions[i]}, 激活状态: {initialActiveStates[i]}");
+            }
+        }
+        
+        Debug.Log("MineController: 重置完成");
     }
 }

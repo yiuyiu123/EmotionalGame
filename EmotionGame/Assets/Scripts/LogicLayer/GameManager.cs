@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
 
     public void OnPlayerDeath()
     {
-        Debug.Log("GameManager: OnPlayerDeath 被调用");
+        
         Debug.Log("GameManager: OnPlayerDeathEvent 事件监听器数量: " + (OnPlayerDeathEvent?.GetInvocationList().Length ?? 0));
         OnPlayerDeathEvent?.Invoke();
         Debug.Log("GameManager: OnPlayerDeathEvent 事件触发完成");

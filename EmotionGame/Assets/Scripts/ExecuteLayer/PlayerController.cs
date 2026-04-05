@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
     public bool isMoving { get; private set; }
     public bool isJumping { get; set; }
     public bool isTakingPhotos { get; set; }
+    public bool isGrounded { get; private set; }
 
-    private bool isGrounded;
     private float brakeTimer;
 
     public event Action OnMakePhoneCall;
@@ -71,6 +71,14 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJumpOrClimb()
     {
+        // 检查是否在爬墙区域
+        PlayerColliderDetect pcd = FindObjectOfType<PlayerColliderDetect>();
+        if (pcd != null && pcd.isInClimbArea)
+        {
+            // 在爬墙区域，由PlayerColliderDetect处理爬墙
+            return;
+        }
+        
         if (isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
@@ -114,5 +122,20 @@ public class PlayerController : MonoBehaviour
         {
             isGrounded = false;
         }
+    }
+
+    private Vector3 initialPosition;
+
+    private void Start()
+    {
+        // 保存初始位置
+        initialPosition = transform.position;
+    }
+
+    public void Respawn()
+    {
+        // 重置位置到初始位置
+        transform.position = initialPosition;
+        Debug.Log("PlayerController: 角色已重生到初始位置");
     }
 }
