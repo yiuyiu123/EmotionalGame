@@ -3,50 +3,37 @@ using UnityEngine;
 
 public class PlayerInputManager : MonoBehaviour
 {
-    public event Action OnTryMoveLeftDown;
-    public event Action OnTryMoveLeftUp;
-    public event Action OnTryMoveRightDown;
-    public event Action OnTryMoveRightUp;
-    public event Action OnTryJumpOrClimbDown;
-    public event Action OnTryJumpOrClimbUp;
-    public event Action OnTryConfirmOrSurrenderDown;
-    public event Action OnTryConfirmOrSurrenderUp;
-    public event Action OnTryTakePhotoDown;
-    public event Action OnTryTakePhotoUp;
+    public event Action OnMoveLeft;
+    public event Action OnMoveRight;
+    public event Action OnJumpOrClimb;
+    public event Action OnTryTakePhoto;
+    public event Action OnTryMakePhoneCall;
 
     private void Update()
     {
-        DetectKeyboardInput();
+        DetectMovementInput();
+        DetectJumpInput();
         DetectMouseInput();
     }
 
-    private void DetectKeyboardInput()
+    private void DetectMovementInput()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
-            OnTryMoveLeftDown?.Invoke();
-        }
-        else if (Input.GetKeyUp(KeyCode.A))
-        {
-            OnTryMoveLeftUp?.Invoke();
+            OnMoveLeft?.Invoke();
         }
 
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKey(KeyCode.D))
         {
-            OnTryMoveRightDown?.Invoke();
+            OnMoveRight?.Invoke();
         }
-        else if (Input.GetKeyUp(KeyCode.D))
-        {
-            OnTryMoveRightUp?.Invoke();
-        }
+    }
 
+    private void DetectJumpInput()
+    {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            OnTryJumpOrClimbDown?.Invoke();
-        }
-        else if (Input.GetKeyUp(KeyCode.W))
-        {
-            OnTryJumpOrClimbUp?.Invoke();
+            OnJumpOrClimb?.Invoke();
         }
     }
 
@@ -54,20 +41,12 @@ public class PlayerInputManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            OnTryConfirmOrSurrenderDown?.Invoke();
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            OnTryConfirmOrSurrenderUp?.Invoke();
+            OnTryTakePhoto?.Invoke();
         }
 
         if (Input.GetMouseButtonDown(1))
         {
-            OnTryTakePhotoDown?.Invoke();
-        }
-        else if (Input.GetMouseButtonUp(1))
-        {
-            OnTryTakePhotoUp?.Invoke();
+            OnTryMakePhoneCall?.Invoke();
         }
     }
 }

@@ -3,7 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - PhotoArea
+  - PreEnemyGun
+  - PreFriendGun
+  - EnemyGun
+  - FriendGun
+  - PreMine
+  - Mine
+  - PreDrop
+  - Drop
+  - Ground
+  - ClimbArea
   layers:
   - Default
   - TransparentFX
