@@ -69,6 +69,24 @@ public class PlayerColliderDetect : MonoBehaviour
     {
         HandleClimbing();
         HandleMovementInClimbArea();
+        
+        // 检测AD键输入，允许在爬墙时离开墙体
+        if (isInClimbArea && (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)))
+        {
+            // 离开爬墙区域
+            isInClimbArea = false;
+            isClimbing = false;
+            hasClimbed = false;
+            
+            // 恢复重力
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.gravityScale = 3f;
+            }
+            
+            Debug.Log("PlayerColliderDetect: 按下AD键离开爬墙区域");
+        }
     }
 
     private void HandleJumpOrClimb()
@@ -90,7 +108,7 @@ public class PlayerColliderDetect : MonoBehaviour
 
     private void HandleTryTakePhoto()
     {
-        if (isInPhotoArea)
+        if (isInPhotoArea && playerController != null && !playerController.isTakingPhotos)
         {
             OnPhotoSuccess?.Invoke();
             Debug.Log("拍照成功");
@@ -299,8 +317,8 @@ public class PlayerColliderDetect : MonoBehaviour
                 GunController gunController = FindObjectOfType<GunController>();
                 if (gunController != null)
                 {
-                    // 这里需要确定是哪个友军枪，暂时使用0索引
-                    gunController.OnPlayerEnterFriendGunArea(0);
+                    // 确定是哪个友军枪，使用meetDropCount作为索引
+                    gunController.OnPlayerEnterFriendGunArea(meetDropCount);
                 }
             }
     }

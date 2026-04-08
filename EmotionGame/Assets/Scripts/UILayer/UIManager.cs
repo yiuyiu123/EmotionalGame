@@ -200,12 +200,12 @@ public class UIManager : MonoBehaviour
     {
         Debug.Log("UIManager: 开始等待视频结束");
         
-        // 禁用玩家输入
+        // 禁用玩家输入管理器，但保持监听输入以提前结束
         PlayerInputManager playerInputManager = FindObjectOfType<PlayerInputManager>();
         if (playerInputManager != null)
         {
             playerInputManager.enabled = false;
-            Debug.Log("UIManager: 已禁用玩家输入");
+            Debug.Log("UIManager: 已禁用玩家输入管理器");
         }
         
         // 等待视频开始播放
@@ -214,10 +214,24 @@ public class UIManager : MonoBehaviour
         
         // 使用视频长度作为等待时间
         float videoLength = videoPlayer.clip != null ? (float)videoPlayer.clip.length : 5f;
+        float elapsedTime = 0f;
         Debug.Log($"UIManager: 等待 {videoLength} 秒");
         
-        yield return new WaitForSeconds(videoLength);
-        Debug.Log("UIManager: 视频播放时间已到，隐藏面板");
+        // 循环等待，同时检测玩家输入
+        while (elapsedTime < videoLength)
+        {
+            // 检测任何输入
+            if (Input.anyKeyDown)
+            {
+                Debug.Log("UIManager: 检测到玩家输入，提前结束死亡动画");
+                break;
+            }
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        Debug.Log("UIManager: 视频播放时间已到或检测到输入，隐藏面板");
         
         panel.SetActive(false);
         
@@ -249,15 +263,30 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator HidePanelAfterDelay(GameObject panel, float delay, bool shouldRespawn = false)
     {
-        // 禁用玩家输入
+        // 禁用玩家输入管理器，但保持监听输入以提前结束
         PlayerInputManager playerInputManager = FindObjectOfType<PlayerInputManager>();
         if (playerInputManager != null)
         {
             playerInputManager.enabled = false;
-            Debug.Log("UIManager: 已禁用玩家输入");
+            Debug.Log("UIManager: 已禁用玩家输入管理器");
         }
         
-        yield return new WaitForSeconds(delay);
+        float elapsedTime = 0f;
+        
+        // 循环等待，同时检测玩家输入
+        while (elapsedTime < delay)
+        {
+            // 检测任何输入
+            if (Input.anyKeyDown)
+            {
+                Debug.Log("UIManager: 检测到玩家输入，提前结束死亡动画");
+                break;
+            }
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
         panel.SetActive(false);
         
         // 让角色重生到初始位置（仅在死亡时）

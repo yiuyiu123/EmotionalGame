@@ -136,6 +136,22 @@ public class PlayerController : MonoBehaviour
     {
         // 重置位置到初始位置
         transform.position = initialPosition;
-        Debug.Log("PlayerController: 角色已重生到初始位置");
+        
+        // 重置速度为零
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.gravityScale = 3f; // 确保重力设置正确
+        }
+        
+        // 重置状态变量
+        isMoving = false;
+        isJumping = false;
+        isTakingPhotos = false;
+        isGrounded = true; // 假设重生点在地面上
+        brakeTimer = 0f;
+        
+        Debug.Log("PlayerController: 角色已重生到初始位置并重置所有状态");
     }
 }
