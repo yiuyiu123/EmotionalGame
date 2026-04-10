@@ -130,6 +130,12 @@ public class PlayerController : MonoBehaviour
     {
         // 保存初始位置
         initialPosition = transform.position;
+        
+        // 显式设置初始状态
+        isGrounded = true; // 假设初始位置在地面上
+        isJumping = false;
+        isMoving = false;
+        isTakingPhotos = false;
     }
 
     public void Respawn()
