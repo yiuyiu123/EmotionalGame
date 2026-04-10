@@ -9,93 +9,60 @@ public class PlayerAnimation : MonoBehaviour
 
     private void Start()
     {
-        // 获取组件
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         playerController = GetComponent<PlayerController>();
         playerColliderDetect = GetComponent<PlayerColliderDetect>();
-        
-        // 初始化动画参数，确保初始状态正确
-        ResetAnimationParameters();
     }
 
     private void Update()
     {
-        // 更新速度参数（控制走路/跑步）
+        if (anim == null) return;
+
+        // 走路/跑步速度控制
+        float speed = 0f;
         if (playerController != null)
         {
-            // 检测左右移动输入
-            bool isMovingLeft = Input.GetKey(KeyCode.A);
-            bool isMovingRight = Input.GetKey(KeyCode.D);
-            
-            // 根据输入设置速度
-            float speed = 0f;
-            if (isMovingLeft || isMovingRight)
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
             {
-                speed = playerController.moveSpeed; // 使用玩家移动速度
+                speed = playerController.moveSpeed;
             }
-            
-            anim.SetFloat("Speed", speed);
         }
-        else if (rb != null)
-        {
-            // 备用方案：使用rigidbody速度
-            float speed = Mathf.Abs(rb.velocity.x);
-            anim.SetFloat("Speed", speed);
-        }
+        anim.SetFloat("Speed", speed);
 
-        // 更新跳跃状态
+        // 跳跃状态控制
+        bool isJumping = false;
         if (playerController != null)
         {
-            anim.SetBool("IsJumping", playerController.isJumping);
+            isJumping = playerController.isJumping;
         }
-        else
-        {
-            // 确保playerController为null时，跳跃状态为false
-            anim.SetBool("IsJumping", false);
-        }
+        anim.SetBool("IsJumping", isJumping);
 
-        // 更新攀爬状态
+        // 攀爬状态控制
+        bool isClimbing = false;
         if (playerColliderDetect != null)
         {
-            anim.SetBool("IsClimbing", playerColliderDetect.isClimbing);
+            isClimbing = playerColliderDetect.isClimbing;
         }
-        else
-        {
-            // 确保playerColliderDetect为null时，攀爬状态为false
-            anim.SetBool("IsClimbing", false);
-        }
-        
-        // 更新投降状态
-        // 注意：这里不需要实时更新，因为投降是通过TriggerRaise和EndRaise方法控制的
+        anim.SetBool("IsClimbing", isClimbing);
     }
 
-    // 初始化动画参数
-    private void ResetAnimationParameters()
+    public void TriggerRaise()
     {
         if (anim != null)
         {
-            // 确保所有状态参数初始为false
-            anim.SetFloat("Speed", 0f);
-            anim.SetBool("IsJumping", false);
-            anim.SetBool("IsClimbing", false);
+            anim.SetBool("IsRaising", true);
+        }
+    }
+
+    public void EndRaise()
+    {
+        if (anim != null)
+        {
             anim.SetBool("IsRaising", false);
         }
     }
 
-    // 触发投降动画
-    public void TriggerRaise()
-    {
-        anim.SetBool("IsRaising", true);
-    }
-
-    // 结束投降动画
-    public void EndRaise()
-    {
-        anim.SetBool("IsRaising", false);
-    }
-
-    // 跳跃动画结束事件（在动画中添加事件调用）
     public void OnJumpAnimationEnd()
     {
         if (playerController != null)
@@ -104,18 +71,11 @@ public class PlayerAnimation : MonoBehaviour
         }
     }
 
-    // 停止动画结束事件（在动画中添加事件调用）
     public void OnStopAnimationEnd()
     {
-        // 可以在这里添加停止动画结束后的逻辑
     }
 
-    // 攀爬动画结束事件（在动画中添加事件调用）
     public void OnClimbAnimationEnd()
     {
-        if (playerColliderDetect != null)
-        {
-            // 确保攀爬状态正确重置
-        }
     }
 }
