@@ -55,6 +55,12 @@ TagManager:
   - name: Background
     uniqueID: 3461438431
     locked: 0
+  - name: Phone\video
+    uniqueID: 14248447
+    locked: 0
   - name: Player
     uniqueID: 2331707277
+    locked: 0
+  - name: UI
+    uniqueID: 340377787
     locked: 0
